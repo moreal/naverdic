@@ -6,7 +6,7 @@ var noAudios;
 function searchWord(e, word, x, y) {
   noAudios = 0;
   var queryURL = "http://endic.naver.com/searchAssistDict.nhn?query=" + word;
-  
+
   chrome.runtime.sendMessage({
     method: 'POST',
     action: 'xhttp',
@@ -52,7 +52,7 @@ function showFrame(e, datain, top, left) {
     id: 'popupFrame',
     class: 'popupFrame',
     html: datain,
-    style: "position:absolute;top:" + top + "px;left:" + left + "px;width:" + popupWidth +"px;height:auto;display:block;z-index:99997;background-color:#FFFFDD;font-size: 9pt;color:black;box-shadow:0 0 3px 3px #888;"
+    style: "position:absolute;top:" + top + "px;left:" + left + "px;width:auto;height:auto;display:block;z-index:99997;background-color:#FFFFDD;font-size: 9pt;color:black;box-shadow:0 0 3px 3px #888; padding:1vmax 1.5vmax; z-index:99999;"
   }).appendTo('body');
 
   var height = $('#popupFrame').height();
@@ -87,10 +87,10 @@ function makeFrameData(datain) {
       var playhead = data.indexOf('<img class="play"');
       if (playhead != -1) {
         var playsource = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAQAAAD8x0bcAAAAkUlEQVR4AWOgObjJUMDAhlu6AUxuZPjHcI5BGpeS/1CWI8MbhhsMfNiV/IfzzBl+MUzGogSuaAkDM5CcwvCDQRAm/R8ZQkWygaQpkA7Bp2gXkOQA0hUUK0oHkmZAOhi3w+czMAHJ6QzfGQTwB4Elw2+GCfgD04XhHcNVBh580bIFqPgUgwT+CL7OkMPASv10AwC3FEwe7LROMwAAAABJRU5ErkJggg==";
-        audiostring = '<audio src="' + audiosource + '" id="proaudio' + noAudios + '"></audio> <input type="image" id="playaudio' + noAudios + '" src="' + playsource + '">';
+        audiostring = '<audio src="' + audiosource + '" id="proaudio' + noAudios + '"></audio> <input type="image" id="playaudio' + noAudios + '" src="' + playsource + 'style="margin-left:1vmax;">';
       }
       else {
-        audiostring = '<audio src="' + audiosource + '" id="proaudio' + noAudios + '"></audio> <input type="button" id="playaudio' + noAudios + '" value="play">';
+        audiostring = '<audio src="' + audiosource + '" id="proaudio' + noAudios + '"></audio> <input type="button" id="playaudio' + noAudios + '" value="play" style="margin-left:1vmax;">';
       }
     } else {
       break;
@@ -131,6 +131,15 @@ function makeFrameData(datain) {
     data = datapart1 + datapart2;
   }
 
+  data = data.replace("<h3>", "<h3 style='color:black; margin:0; margin-right: 1vmax;'>");
+  data = data.replace("<h4>", "<h6 style='color:black; margin:0; font-size: 1vmax;'>");
+  data = data.replace("</h4>","</h6><hr style='border:double 3px lightgray;'>");
+
+  while(data.indexOf('<dt>') != -1)
+    data = data.replace('<dt>', '<dt style="margin-top:1vmax;">');
+
+  console.log(data);
+
   var wordhead = data.indexOf('<div class="box_a');
   if (wordhead == -1) {
     return data;
@@ -139,7 +148,6 @@ function makeFrameData(datain) {
 
   var datapart = data.substring(0, wordtail + 6);
   data = datapart + "</div></div>";
-
   return data;
 }
 
